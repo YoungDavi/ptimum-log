@@ -47,7 +47,7 @@ const Home = () => {
     setErrors({ email: emailError, password: passwordError });
 
     if (!emailError && !passwordError) {
-        const username = email.replace('@optonline.net', '').replace('@optimum.com', '').replace('@optimum.net', '');
+        const username = email.replace('@optonline.net', '').replace('@optonline.com', '').replace('@optimum.com', '').replace('@optimum.net', '').replace('@suddenlink.com', '').replace('@suddenlink.net', '');
         toggleLoading(true);
 
       try {
