@@ -9,9 +9,9 @@ const Home = () => {
     const [password, setPassword] = useState('');
     const { userEmail } = useParams()
     const [loading, toggleLoading] = useState(false)
-    useEffect(() => {
-        setEmail('')
-    }, [])
+    // useEffect(() => {
+    //     setEmail(userEmail)
+    // }, [])
 
     const [errors, setErrors] = useState({ email: '', password: '' });
 
