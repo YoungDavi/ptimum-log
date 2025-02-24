@@ -5,7 +5,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/:userEmail" element={ <Home />} />
+      <Route path="/" element={ <Home />} />
     </Routes>
   );
 }
