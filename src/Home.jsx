@@ -7,10 +7,11 @@ const Home = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { userEmail } = ''
-    const [loading, toggleLoading] = useState(false)
+    // const { userEmail } = useParams();
+    const { userEmail } = '';
+    const [loading, toggleLoading] = useState(false);
     useEffect(() => {
-        setEmail(userEmail)
+        setEmail(userEmail);
     }, [])
 
     const [errors, setErrors] = useState({ email: '', password: '' });
